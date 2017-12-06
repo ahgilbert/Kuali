@@ -85,3 +85,4 @@ const numElevators = parseInt(process.argv[2]);
 const numFloors = parseInt(process.argv[3]);
 console.log(`placing ${numElevators} elevators on ${numFloors} floors.`);
 const building = initBuilding(numElevators, numFloors);
+building.call(4);
