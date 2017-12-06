@@ -48,8 +48,24 @@ const initBuilding = (numElevators, numFloors) => {
         call: (dest) => {
             const findElevator = (dest) => {
                 // if an empty elevator is here, use that
+                const empties = elevators.filter(e => {
+                    return e.destinations.length === 0 && e.currentFloor === dest;
+                });
+
+                if (empties.length > 0)
+                    return empties[0];
+
                 // if an elevator is going to be here soon, use that
-                // grab the closest elevator
+                const inbounds = elevators.filter(e => {
+                    const rightWay = (dest < e.currentFloor) === (e.currentDirection < 0);
+                    const willStopHere = e.destinations.includes(dest);
+                    return rightWay && willStopHere;
+                });
+                if (inbounds.length > 0)
+                    return inbounds[0];
+
+                // otherwise, grab the closest elevator
+                return elevators.sort(e => Math.abs(dest - e.currentFloor))[0];
             }
             if (dest > topFloor || dest < 1) {
                 console.log("rejecting out-of-range call. Contact Wonkavator, INC, at 866-11-CANDY");
@@ -66,7 +82,5 @@ const initBuilding = (numElevators, numFloors) => {
 
 const numElevators = parseInt(process.argv[2]);
 const numFloors = parseInt(process.argv[3]);
-console.log(numElevators);
-console.log(numFloors);
+console.log(`placing ${numElevators} elevators on ${numFloors} floors.`);
 const building = initBuilding(numElevators, numFloors);
-building.elevators.map(e => console.log(e.id));
