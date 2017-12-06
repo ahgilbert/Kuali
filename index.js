@@ -1,16 +1,19 @@
 const initBuilding = (numElevators, numFloors) => {
-    const getDirection = (from, to) => {
-        if (from < to) return 1;
-        if (from > to) return -1;
-        return 0;
-    }
     const elevator = (ident) => {
         return {
             id: ident,
             currentFloor: 1,
+            currentDirection: 1,
             tripCount: 0,
             floorCount: 0,
             destinations: [],
+            shouldSwitchDirection: () => {
+                if (currentDirection > 0) {
+                    return destinations.filter((x) => x > currentFloor).length === 0
+                } else {
+                    return destinations.filter((x) => x < currentFloor).length === 0
+                }
+            },
             addDestination: (currentFloor) => {
                 if(tripCount >= 100) {
                     console.log(`elevator ${id} is in maintenence mode`);
@@ -28,10 +31,13 @@ const initBuilding = (numElevators, numFloors) => {
                 if (destinations.includes(currentFloor)) {
                     console.log(`elevator ${id} stopping at floor ${currentFloor}`);
                     destinations = destinations.filter((x) => x !== currentFloor);
+                    if (shouldSwitchDirection(currentFloor, currentDirection, destinations)) {
+                        currentDirection = currentDirection * -1;
+                    }
                 }
                 // need to move to the most appropriate floor
                 floorCount++;
-                currentFloor += getDirection(currentFloor, destinations[0]); // ignore bias for now
+                currentFloor += currentDirection;
             }
         };
 
@@ -39,7 +45,7 @@ const initBuilding = (numElevators, numFloors) => {
             topFloor: numFloors,
             elevators: Array(numElevators).fill(elevator),
             call: (dest) => { console.log(`please send an elevator to ${dest}`) },
-            tick: () => { console.log('all elevators move 1 floor, let people on/off, or idle') }
+            tick: () => { console.log('all elevators tick once') }
         }
     };
 };
