@@ -8,19 +8,19 @@ const initBuilding = (numElevators, numFloors) => {
         this.destinations = [];
         this.shouldSwitchDirection = () => {
             if (currentDirection > 0) {
-                return destinations.filter((x) => x > currentFloor).length === 0
+                return this.destinations.filter((x) => x > currentFloor).length === 0
             } else {
-                return destinations.filter((x) => x < currentFloor).length === 0
+                return this.destinations.filter((x) => x < currentFloor).length === 0
             }
         };
         this.addDestination = (currentFloor) => {
-            if(tripCount >= 100) {
-                console.log(`elevator ${id} is in maintenence mode`);
+            if(this.tripCount >= 100) {
+                console.log(`elevator ${this.id} is in maintenence mode`);
                 return false;
             } else {
-                destinations.push(currentFloor);
-                destinations = [ ...new Set(destinations) ].sort();
-                tripCount++;
+                this.destinations.push(currentFloor);
+                this.destinations = [ ...new Set(this.destinations) ].sort();
+                this.tripCount++;
                 return true;
             }
         };
@@ -48,12 +48,11 @@ const initBuilding = (numElevators, numFloors) => {
     this.call = (dest) => {
         const findElevator = (dest) => {
             // if an empty elevator is here, use that
-            const empties = this.elevators.filter(e => {
+            const handy = this.elevators.filter(e => {
                 return e.destinations.length === 0 && e.currentFloor === dest;
             });
-
-            if (empties.length > 0)
-                return empties[0];
+            if (handy.length > 0)
+                return handy[0];
 
             // if an elevator is going to be here soon, use that
             const inbounds = this.elevators.filter(e => {
@@ -68,12 +67,13 @@ const initBuilding = (numElevators, numFloors) => {
             const byProximity = this.elevators.sort(e => Math.abs(dest - e.currentFloor));
             return byProximity[0];
         }
+
         if (dest > this.topFloor || dest < 1) {
             console.log("rejecting out-of-range call. Contact Wonkavator, INC, at 866-11-CANDY");
             return;
         }
         const target = findElevator(dest);
-        target.call(dest);
+        target.addDestination(dest);
     };
     this.tick = () => {
         elevators.forEach(e => e.tick());
