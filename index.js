@@ -37,6 +37,7 @@ const initBuilding = (numElevators, numFloors) => {
                 }
                 // need to move to the most appropriate floor
                 floorCount++;
+                console.log(`elevator ${id}, going ${currentDirection > 0 ? 'up' : 'down'}!`);
                 currentFloor += currentDirection;
             }
         };
