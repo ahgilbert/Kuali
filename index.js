@@ -4,7 +4,14 @@ const initBuilding = (numElevators, numFloors) => {
         trips: 0,
         destinations: [],
         addDestination: (floor) => { console.log(`add ${floor} to your destination list`) },
-        tick: () => { console.log('let people on/off, move, or idle') }
+        tick: () => {
+            if (destinations.length === 0)
+                return;
+            if (destinations.includes(floor)) {
+                console.log(`elevator ${id} stopping at floor ${floor}`);
+                destinations = destinations.filter((x) => x !== floor);
+            }
+        }
     };
 
     return {
