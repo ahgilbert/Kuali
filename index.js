@@ -24,20 +24,20 @@ const initBuilding = (numElevators, numFloors) => {
                 return true;
             }
         };
-        this.tick = () => {
-            if (destinations.length === 0)
+        this.oneStep = () => {
+            if (this.destinations.length === 0)
                 return;
-            if (destinations.includes(currentFloor)) {
-                console.log(`elevator ${id} stopping at floor ${currentFloor}`);
+            if (this.destinations.includes(this.currentFloor)) {
+                console.log(`elevator ${this.id} stopping at floor ${this.currentFloor}`);
                 destinations = destinations.filter((x) => x !== currentFloor);
-                if (shouldSwitchDirection(currentFloor, currentDirection, destinations)) {
-                    currentDirection = currentDirection * -1;
+                if (this.shouldSwitchDirection()) {
+                    this.currentDirection = this.currentDirection * -1;
                 }
             }
             // need to move to the most appropriate floor
-            floorCount++;
-            console.log(`elevator ${id}, going ${currentDirection > 0 ? 'up' : 'down'}!`);
-            currentFloor += currentDirection;
+            this.floorCount++;
+            console.log(`elevator ${this.id}, going ${this.currentDirection > 0 ? 'up' : 'down'}!`);
+            this.currentFloor += this.currentDirection;
         };
 
         return this;
@@ -76,7 +76,7 @@ const initBuilding = (numElevators, numFloors) => {
         target.addDestination(dest);
     };
     this.tick = () => {
-        elevators.forEach(e => e.tick());
+        this.elevators.forEach(e => e.oneStep());
     };
 
     return this;
@@ -87,3 +87,4 @@ const numFloors = parseInt(process.argv[3]);
 console.log(`placing ${numElevators} elevators on ${numFloors} floors.`);
 const building = initBuilding(numElevators, numFloors);
 building.call(4);
+building.tick();
