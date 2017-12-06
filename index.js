@@ -33,11 +33,13 @@ const initBuilding = (numElevators, numFloors) => {
                 if (this.shouldSwitchDirection()) {
                     this.currentDirection = this.currentDirection * -1;
                 }
+                return;
             }
             // need to move to the most appropriate floor
             this.floorCount++;
             console.log(`elevator ${this.id}, going ${this.currentDirection > 0 ? 'up' : 'down'}!`);
             this.currentFloor += this.currentDirection;
+            return;
         };
 
         return this;
